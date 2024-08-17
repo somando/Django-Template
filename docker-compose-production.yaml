@@ -1,0 +1,56 @@
+services:
+  web:
+    container_name: django-web
+    image: django-web:latest
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+    volumes:
+      - type: volume
+        source: socket
+        target: /var/run/gunicorn
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+
+  app:
+    container_name: django-app
+    image: django-app:latest
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    volumes:
+      - type: volume
+        source: socket
+        target: /var/run/gunicorn
+    env_file:
+      - docker/app/.env
+    command: gunicorn -w 3 --bind unix:/var/run/gunicorn/gunicorn.sock config.wsgi
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  db:
+    container_name: django-db
+    image: postgres
+    volumes:
+      - type: volume
+        source: db-volume
+        target: /var/lib/postgresql/data
+    env_file:
+      - docker/db/.env
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER:-postgres}
+      interval: 2s
+      timeout: 5s
+      retries: 5
+      start_period: 3s
+
+volumes:
+  db-volume:
+    name: django-db-volume
+    driver: local
+  socket:
+    name: django-socket
+    driver: local
