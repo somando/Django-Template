@@ -1,7 +1,7 @@
 services:
   web:
     container_name: django-web
-    image: django-web:latest
+    image: django-web:production
     build:
       context: .
       dockerfile: docker/web/Dockerfile
@@ -10,16 +10,16 @@ services:
         source: socket
         target: /var/run/gunicorn
     ports:
-      - "8080:80"
+      - "80:80"
     depends_on:
       - app
 
   app:
     container_name: django-app
-    image: django-app:latest
+    image: django-app:production
     build:
       context: .
-      dockerfile: docker/app/Dockerfile
+      dockerfile: docker/app/Dockerfile-production
     volumes:
       - type: volume
         source: socket

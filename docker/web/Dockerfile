@@ -1,5 +1,6 @@
 FROM nginx:latest
 
 COPY docker/web/default.conf /etc/nginx/conf.d/default.conf
+COPY staticfiles/ /var/www/static
 
-EXPOSE 8080:80
+EXPOSE 80:80

@@ -1,35 +1,19 @@
 services:
-  web:
-    container_name: django-web
-    image: django-web:latest
-    build:
-      context: .
-      dockerfile: docker/web/Dockerfile
-    volumes:
-      - type: volume
-        source: socket
-        target: /var/run/gunicorn
-    ports:
-      - "8080:80"
-    depends_on:
-      - app
-
   app:
     container_name: django-app
-    image: django-app:latest
+    image: django-app:develop
     build:
       context: .
-      dockerfile: docker/app/Dockerfile
+      dockerfile: docker/app/Dockerfile-develop
     volumes:
       - type: bind
         source: .
         target: /app
-      - type: volume
-        source: socket
-        target: /var/run/gunicorn
     env_file:
       - docker/app/.env
-    command: gunicorn -w 3 --bind unix:/var/run/gunicorn/gunicorn.sock config.wsgi
+    ports:
+      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       db:
         condition: service_healthy
@@ -53,7 +37,4 @@ services:
 volumes:
   db-volume:
     name: django-db-volume
-    driver: local
-  socket:
-    name: django-socket
     driver: local
