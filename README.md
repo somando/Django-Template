@@ -38,7 +38,7 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
            ```
            `'v#wt+ag1)vuubl!9t5ca@lks402vr3#-aab*=$i3d7r+xzv&j5'`のように出力されます。
 
-           （Pythonシェルを終了するには、`Ctrl + C`を押します）
+           （Pythonシェルを終了するには、`exit()`と入力します）
 
         3. `.env`の中の`[DjangoSecretKey]`を先ほどの文字列に置き換える
 
