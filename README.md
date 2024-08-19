@@ -56,8 +56,8 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
 
       下記、コマンドを実行して開発環境イメージをビルドします。
 
-      [!WARNING]
-      ここから先の操作はDocker Engineが起動している必要があります。
+> [!WARNING]
+> ここから先の操作はDocker Engineが起動している必要があります。
 
       ``` bash
       docker-compose -f docker-compose-develop.yaml build
@@ -71,8 +71,8 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
       docker-compose -f docker-compose-develop.yaml up -d
       ```
 
-   [!NOTE]
-   ローカルで起動した場合、 http://localhost:8000 で接続できます。
+> [!NOTE]
+> ローカルで起動した場合、 http://localhost:8000 で接続できます。
 
 ## 起動方法（本番環境）
 
@@ -80,15 +80,15 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
 
    Appコンテナの起動方法にはGunicornが使われており、WebコンテナとAppコンテナはソケット通信で接続されています。
 
-   [!TIP]
-   DBサーバーにRDSなどを使用して別途起動する場合にはDBコンテナを削除し、`docker/app/.env`の`DB_HOST`にDBサーバーのDNSを指定する必要があります。
+> [!TIP]
+> DBサーバーにRDSなどを使用して別途起動する場合にはDBコンテナを削除し、`docker/app/.env`の`DB_HOST`にDBサーバーのDNSを指定する必要があります。
 
    1. イメージをビルドする
 
       下記、コマンドを実行して開発環境イメージをビルドします。
 
-      [!WARNING]
-      ここから先の操作はDocker Engineが起動している必要があります。
+> [!WARNING]
+> ここから先の操作はDocker Engineが起動している必要があります。
 
       ``` bash
       docker-compose -f docker-compose-production.yaml build
@@ -102,8 +102,8 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
       docker-compose -f docker-compose-production.yaml up -d
       ```
 
-   [!NOTE]
-   ローカルで起動した場合、 http://localhost:80 で接続できます。
+> [!NOTE]
+> ローカルで起動した場合、 http://localhost:80 で接続できます。
 
 ## 注意事項
 
