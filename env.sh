@@ -43,5 +43,6 @@ if command -v docker &> /dev/null; then
   # aliases for host machine, not in docker container
   alias app="docker exec -it django-app"
   alias django="app python manage.py"
-  alias init="up setup && down setup && up dev -d && app python project_init.py && down dev"
+  alias pip="app pip"
+  alias init="docker build -t django-setup -f docker/setup/Dockerfile . && docker run --name django-setup --volume .:/setup --rm django-setup python project_setup.py && up dev -d && app python project_init.py && down dev"
 fi

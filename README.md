@@ -4,58 +4,28 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
 
 このリポジトリには2種類の`docker-compose.yaml`ファイルが含まれています。
 
-## 使い方（共通）
-
 > [!WARNING]
-> 
-> 以下のコードを実行するには、各種ライブラリがインストールされた環境が必要です。
-> 
-> 仮想環境を利用する場合はアクティベートしてから実行してください。
+> README内のコードを実行するには、下記コードが実行されたターミナルで実行する必要があります。
 > 
 > ``` bash
-> pip install -r requirements.txt
+> source env.sh
 > ```
 
-1. `docker/app/`と`docker/db/`の中に`.env`ファイルをそれぞれ新しく作成します
+## 使い方（初期設定）
 
-   - ファイルの例は`.env.example`です。この中に書かれている環境変数は必ず指定する必要があります。
-  
-   - まずは、`.env.example`の中身を`.env`にそのままコピーすることをお勧めします。
+> [!WARNING]
+> ここから先の操作はDocker Engineが起動している必要があります。
 
-   - `DJANGO_SECRET_KEY`は下記の手順に沿って生成してください。
+初期設定を行うには下記のコマンドを実行してください。
 
-        1. シェルで以下のコードを実行する
-           ``` bash
-           python manage.py shell
-           ```
+``` bash
+init
+```
 
-        2. 起動したPythonシェル内で以下のように実行する
-           ``` python
-           from django.core.management.utils import get_random_secret_key
-           ```
-           ``` python
-           get_random_secret_key()
-           ```
-           `'v#wt+ag1)vuubl!9t5ca@lks402vr3#-aab*=$i3d7r+xzv&j5'`のように出力されます。
+このコマンドを実行することで以下の処理を行います。
 
-           （Pythonシェルを終了するには、`exit()`と入力します）
-
-        3. `.env`の中の`[DjangoSecretKey]`を先ほどの文字列に置き換える
-
-           `.env`ファイル内のシークレットキーはこのようになります。
-           ```
-           DJANGO_SECRET_KEY=django-insecure-v#wt+ag1)vuubl!9t5ca@lks402vr3#-aab*=$i3d7r+xzv&j5
-           ```
-
-   - データベースの接続設定は下記のように対応しています。
-
-     （左側が`docker/app/.env`、右側が`docker/db/.env`に対応 / `DB_HOST`にはDBコンテナのネットワークエイリアス`db`を使用）
-
-     - `DB_NAME` = `POSTGRES_DB`
-     - `DB_USER` = `POSTGRES_USER`
-     - `DB_PASS` = `POSTGRES_PASSWORD`
-
-2. 起動方法は起動環境によって異なります
+- .envファイルの生成
+- Django Secret Keyの発行・登録
 
 ## 起動方法（開発環境）
 
@@ -71,7 +41,7 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
       下記、コマンドを実行して開発環境イメージをビルドします。
 
       ``` bash
-      docker-compose -f docker-compose-develop.yaml build
+      build dev
       ```
 
    2. コンテナを起動する
@@ -79,7 +49,7 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
       下記、コマンドを実行してコンテナを起動します。
 
       ``` bash
-      docker-compose -f docker-compose-develop.yaml up -d
+      up dev
       ```
 
 > [!NOTE]
@@ -102,7 +72,7 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
       下記、コマンドを実行して開発環境イメージをビルドします。
 
       ``` bash
-      docker-compose -f docker-compose-production.yaml build
+      build pro
       ```
 
    2. コンテナを起動する
@@ -110,11 +80,35 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
       下記、コマンドを実行してコンテナを起動します。
 
       ``` bash
-      docker-compose -f docker-compose-production.yaml up -d
+      up pro
       ```
 
 > [!NOTE]
 > ローカルで起動した場合、 http://localhost:80 で接続できます。
+
+## エイリアス
+
+このリポジトリでは以下のエイリアスを導入しています。
+
+### Docker Compose
+
+Docker Composeにまつわるものは下記のとおりです。
+
+各コマンドの後に引数をつけることも可能です。
+
+- `build [dev|pro]` ... イメージのビルド
+- `up [dev|pro]` ... コンテナの起動
+- `stop [dev|pro]` ... コンテナの停止
+- `down [dev|pro]` ... コンテナの削除
+
+### その他
+
+その他の操作は下記のエイリアスが設定されています。
+
+- `app` = `docker exec -it django-app`
+- `pip` = `docker exec -it django-app pip`
+- `django` = `docker exec -it django-app python manage.py`
+- `init` = `up setup && down setup && up dev -d && app python project_init.py && down dev`
 
 ## 注意事項
 
@@ -122,7 +116,7 @@ Django + PostgreSQL + NginxでDockerコンテナを起動するテンプレー�
 
   必要がなければ、`LICENSE`ファイルを削除してください。
 
-- 開発環境でAppコンテナのシェル操作をする場合、各コマンドの前に`docker container exec django-app`をつけて実行する必要があります。
+- 開発環境でAppコンテナのシェル操作をする場合、各コマンドの前に`app`をつけて実行する必要があります。
 
 ## Copyright
 
