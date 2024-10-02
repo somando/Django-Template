@@ -1,0 +1,11 @@
+services:
+  python:
+    container_name: django-setup
+    build:
+      context: .
+      dockerfile: docker/setup/Dockerfile
+    volumes:
+      - type: bind
+        source: .
+        target: /setup
+    command: python project_setup.py
