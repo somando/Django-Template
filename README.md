@@ -108,7 +108,7 @@ Docker Composeにまつわるものは下記のとおりです。
 - `app` = `docker exec -it django-app`
 - `pip` = `docker exec -it django-app pip`
 - `django` = `docker exec -it django-app python manage.py`
-- `init` = `up setup && down setup && up dev -d && app python project_init.py && down dev`
+- `init` = `docker build -t django-setup -f docker/setup/Dockerfile . && docker run --name django-setup --volume .:/setup --rm django-setup python project_setup.py && up dev -d && app python project_init.py && down dev`
 
 ## 注意事項
 
