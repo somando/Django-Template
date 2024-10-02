@@ -26,9 +26,6 @@ if command -v docker &> /dev/null; then
       pro)
         $COMPOSE_CMD -f docker-compose-production.yaml "$operation" "${args[@]}"
         ;;
-      setup)
-        $COMPOSE_CMD -f docker-compose-setup.yaml "$operation" "${args[@]}"
-        ;;
       *)
         $COMPOSE_CMD "$operation" "${args[@]}"
         ;;
@@ -44,5 +41,5 @@ if command -v docker &> /dev/null; then
   alias app="docker exec -it django-app"
   alias django="app python manage.py"
   alias pip="app pip"
-  alias init="docker build -t django-setup -f docker/setup/Dockerfile . && docker run --name django-setup --volume .:/setup --rm django-setup python project_setup.py && up dev -d && app python project_init.py && down dev"
+  alias init="docker build -t django-setup -f docker/setup/Dockerfile . && docker run --name django-setup --volume .:/setup --rm django-setup python project_setup.py && docker rmi django-setup"
 fi
