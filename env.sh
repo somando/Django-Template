@@ -42,4 +42,5 @@ if command -v docker &> /dev/null; then
   alias django="app python manage.py"
   alias pip="app pip"
   alias init="docker build -t django-setup -f docker/setup/Dockerfile . && docker run --name django-setup --volume .:/setup --rm django-setup python project_setup.py && docker rmi django-setup"
+  alias psql="app psql"
 fi
