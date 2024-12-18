@@ -1,0 +1,111 @@
+stages:
+  - test
+  - lint
+  - security
+
+default:
+  image: python:3.12
+
+pytest:
+  stage: test
+  script:
+    - if [ -e requirements.txt ]; then
+        pip install -r requirements.txt;
+      else
+        echo "No requirements.txt found. Install skipping...";
+      fi
+    - FILES=$(find . -name "*_test.py")
+    - if [ -n "$FILES" ]; then 
+        pip install pytest;
+      else 
+        echo "No tests found. pytest skipping..."; 
+        exit 0;
+      fi
+    - pytest
+
+black:
+  stage: lint
+  script:
+    - FILES=$(find . -name "*.py")
+    - if [ -n "$FILES" ]; then 
+        pip install black;
+      else
+        echo "No .py file found. black skipping...";
+        exit 0;
+      fi
+    - black --check .
+  allow_failure:
+    exit_codes: 
+      - 1
+
+flake8:
+  stage: lint
+  script:
+    - FILES=$(find . -name "*.py")
+    - if [ -n "$FILES" ]; then 
+        pip install flake8 flake8-black;
+      else
+        echo "No .py file found. flake8 skipping...";
+        exit 0;
+      fi
+    - flake8 --statistics
+  allow_failure:
+    exit_codes: 
+      - 1
+
+isort:
+  stage: lint
+  script:
+    - FILES=$(find . -name "*.py")
+    - if [ -n "$FILES" ]; then 
+        pip install isort;
+      else
+        echo "No .py file found. isort skipping...";
+        exit 0;
+      fi
+    - isort . --check --diff
+  allow_failure:
+    exit_codes: 
+      - 1
+
+mypy:
+  stage: lint
+  script:
+    - FILES=$(find . -name "*.py")
+    - if [ -n "$FILES" ]; then 
+        pip install mypy;
+      else
+        echo "No .py file found. mypy skipping...";
+        exit 0;
+      fi
+    - mypy . --ignore-missing-imports
+  allow_failure:
+    exit_codes: 
+      - 1
+
+bandit:
+  stage: security
+  script:
+    - FILES=$(find . -name "*.py")
+    - if [ -n "$FILES" ]; then 
+        pip install bandit;
+      else
+        echo "No .py file found. bandit skipping...";
+        exit 0;
+      fi
+    - bandit -r .
+  allow_failure:
+    exit_codes: 
+      - 1
+
+safety:
+  stage: security
+  script:
+    - pip install safety;
+    - safety --stage production --key "$SAFETY_API_KEY" scan -r requirements.txt;
+  rules:
+    - exists:
+      - requirements.txt
+  allow_failure:
+    exit_codes: 
+      - 1

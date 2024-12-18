@@ -1,0 +1,149 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Install dependencies
+        run: |
+          if [ -e requirements.txt ]; then
+            pip install -r requirements.txt;
+          else
+            echo "No requirements.txt found. Install skipping...";
+          fi
+      - name: Run pytest
+        run: |
+          FILES=$(find . -name "*_test.py")
+          if [ -n "$FILES" ]; then
+            pip install pytest
+            pytest
+          else
+            echo "No tests found. pytest skipping...";
+            exit 0
+          fi
+
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Check Python formatting with Black
+        run: |
+          FILES=$(find . -name "*.py")
+          if [ -n "$FILES" ]; then
+            pip install black
+            black --check .
+          else
+            echo "No .py file found. black skipping...";
+            exit 0
+          fi
+
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Run Flake8
+        run: |
+          FILES=$(find . -name "*.py")
+          if [ -n "$FILES" ]; then
+            pip install flake8 flake8-black
+            flake8 --statistics
+          else
+            echo "No .py file found. flake8 skipping...";
+            exit 0
+          fi
+
+  isort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Run isort
+        run: |
+          FILES=$(find . -name "*.py")
+          if [ -n "$FILES" ]; then
+            pip install isort
+            isort . --check --diff
+          else
+            echo "No .py file found. isort skipping...";
+            exit 0
+          fi
+
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Run mypy
+        run: |
+          FILES=$(find . -name "*.py")
+          if [ -n "$FILES" ]; then
+            pip install mypy
+            mypy . --ignore-missing-imports
+          else
+            echo "No .py file found. mypy skipping...";
+            exit 0
+          fi
+
+  bandit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Run Bandit
+        run: |
+          FILES=$(find . -name "*.py")
+          if [ -n "$FILES" ]; then
+            pip install bandit
+            bandit -r .
+          else
+            echo "No .py file found. bandit skipping...";
+            exit 0
+          fi
+
+  safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Run Safety
+        env:
+          SAFETY_API_KEY: ${{ secrets.SAFETY_API_KEY }}
+        run: |
+          if [ -e requirements.txt ]; then
+            pip install safety
+            safety --stage production scan -r requirements.txt
+          else
+            echo "No requirements.txt found. Safety skipping...";
+            exit 0
+          fi
