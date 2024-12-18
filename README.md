@@ -124,6 +124,8 @@ Docker Composeにまつわるものは下記のとおりです。
 
 このテンプレートリポジトリはSoma Andoによって制作されました。
 
+ライセンスはMIT Licenseです。
+
 [Django Template Repository｜GitHub](https://github.com/somando/DjangoTemplate)
 
 [Soma Ando's Portfolio](https://somando.jp)

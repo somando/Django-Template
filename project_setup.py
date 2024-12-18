@@ -1,5 +1,5 @@
 from django.core.management.utils import get_random_secret_key
-import shutil, os
+import shutil, os, subprocess
 
 TARGET_APP_FILE = "docker/app/.env"
 TARGET_APP_TEMP_FILE = "docker/app/.env.example"
@@ -18,6 +18,8 @@ filedata = filedata.replace(TARGET_WORD, SECRET_KEY)
 
 with open(TARGET_APP_FILE, 'w') as file:
   file.write(filedata)
+
+subprocess.run(["python", "manage.py", "collectstatic", "--no-input"])
 
 shutil.rmtree('docker/setup')
 os.remove('project_setup.py')
