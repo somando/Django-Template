@@ -33,6 +33,21 @@ services:
       timeout: 5s
       retries: 5
       start_period: 3s
+  
+  test:
+    container_name: django-test
+    image: django-test:develop
+    build:
+      context: .
+      dockerfile: docker/test/Dockerfile
+    volumes:
+      - type: bind
+        source: .
+        target: /test
+    tty: true
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   db-volume:
