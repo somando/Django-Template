@@ -44,6 +44,8 @@ services:
       - type: bind
         source: .
         target: /test
+    env_file:
+      - docker/test/.env
     tty: true
     depends_on:
       db:
