@@ -124,9 +124,39 @@ Docker Composeにまつわるものは下記のとおりです。
 その他の操作は下記のエイリアスが設定されています。
 
 - `app` = `docker exec -it django-app`
+- `web` = `docker exec -it django-web`
+- `db` = `docker exec -it django-db`
+- `test` = `docker exec -it django-test`
 - `pip` = `docker exec -it django-app pip`
 - `django` = `docker exec -it django-app python manage.py`
 - `init` = `docker build -t django-setup -f docker/setup/Dockerfile . && docker run --name django-setup --volume .:/setup --rm django-setup python project_setup.py && docker rmi django-setup`
+
+## CIスクリプト
+
+このリポジトリには予めGitHubとGitLabでどちらでも使えるCIスクリプトが入っています。
+
+不要な場合は削除してください。
+
+- GitHub = `.github/workflows/python-ci.yml`
+- GitLab = `.gitlab-ci.yml`
+
+### テスト内容
+
+テストされる内容は以下の通りです
+
+- pytest
+- black
+- flake8
+- isort
+- mypy
+- bandit
+- safety
+
+safetyは予め環境変数`SAFETY_API_KEY`にAPIキーを入力しておく必要があります。
+
+### ローカル実行
+
+また、このCIで実行されるものを予めローカルで実行したい場合は`django-test`コンテナが起動しているので、実行したいコマンドの頭に`test`をつけてコマンドを実行してください。
 
 ## 注意事項
 
@@ -139,8 +169,6 @@ Docker Composeにまつわるものは下記のとおりです。
 ## Copyright
 
 このテンプレートリポジトリはSoma Andoによって制作されました。
-
-ライセンスはMIT Licenseです。
 
 [Django Template Repository｜GitHub](https://github.com/somando/DjangoTemplate)
 
