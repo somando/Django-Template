@@ -1,8 +1,8 @@
 if command -v docker &> /dev/null; then
   if docker compose version &> /dev/null; then
-    COMPOSE_CMD="docker-compose"
+    COMPOSE_CMD=(docker compose)
   elif docker-compose version &> /dev/null; then
-    COMPOSE_CMD="docker-compose"
+    COMPOSE_CMD=(docker-compose)
   else
     echo "Error: Docker Compose is not installed."
     return 1
@@ -21,21 +21,21 @@ if command -v docker &> /dev/null; then
 
     case "$env" in
       dev)
-        $COMPOSE_CMD -f docker-compose-develop.yaml "$operation" "${args[@]}"
+        "${COMPOSE_CMD[@]}" -f docker-compose-develop.yaml "$operation" "${args[@]}"
         ;;
       pro)
-        $COMPOSE_CMD -f docker-compose-production.yaml "$operation" "${args[@]}"
+        "${COMPOSE_CMD[@]}" -f docker-compose-production.yaml "$operation" "${args[@]}"
         ;;
       *)
-        $COMPOSE_CMD "$operation" "${args[@]}"
+        "${COMPOSE_CMD[@]}" "$operation" "${args[@]}"
         ;;
     esac
   }
 
-  build() { action "$0" "$1" "${@:2}"; }
-  up()    { action "$0" "$1" "${@:2}"; }
-  stop()  { action "$0" "$1" "${@:2}"; }
-  down()  { action "$0" "$1" "${@:2}"; }
+  build() { action build "$@"; }
+  up()    { action up "$@"; }
+  stop()  { action stop "$@"; }
+  down()  { action down "$@"; }
 
   # aliases for host machine, not in docker container
   alias app="docker exec -it django-app"
